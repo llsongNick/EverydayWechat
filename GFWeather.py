@@ -56,6 +56,7 @@ class GFWeather:
             # 根据城市名称获取城市编号，用于查询天气。查看支持的城市为：http://cdn.sojson.com/_city.json
             city_name = girlfriend.get('city_name').strip()
             city_code = city_dict.city_dict.get(city_name)
+            # 输入城市名称对应的城市代码不在 city_dict.py 文件中则停止
             if not city_code:
                 print('您输入的城市无法收取到天气信息。')
                 break
@@ -72,6 +73,7 @@ class GFWeather:
         hour, minute = [int(x) for x in alarm_timed.split(':')]
         return girlfriend_list, hour, minute, dictum_channel
 
+    # 静态方法
     @staticmethod
     def is_online(auto_login=False):
         """
@@ -104,6 +106,7 @@ class GFWeather:
             if os.environ.get('MODE') == 'server':
                 itchat.auto_login(enableCmdQR=2, hotReload=True)
             else:
+                # 保留登录的状态，至少在后面的几次登录过程中不会再次扫描二维码，该参数生成一个静态文件itchat.pkl用于存储登录状态
                 itchat.auto_login(hotReload=True)
             if _online():
                 print('登录成功')
@@ -119,6 +122,7 @@ class GFWeather:
         """
         # 自动登录
         if not self.is_online(auto_login=True):
+            print("不在线")
             return
         for girlfriend in self.girlfriend_list:
             wechat_name = girlfriend.get('wechat_name')
@@ -168,6 +172,7 @@ class GFWeather:
 
             if not is_test:
                 if self.is_online(auto_login=True):
+                    # toUserName 发送对象，如果留空, 将发送给自己，返回值为True或者False
                     itchat.send(today_msg, toUserName=name_uuid)
                 # 防止信息发送过快。
                 time.sleep(5)
@@ -292,7 +297,7 @@ class GFWeather:
 
 if __name__ == '__main__':
     # 直接运行
-    # GFWeather().run()
+    GFWeather().run()
 
     # 只查看获取数据，
     # GFWeather().start_today_info(True)
